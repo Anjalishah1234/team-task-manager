@@ -8,21 +8,28 @@ const Task = require("./models/Task");
 
 const app = express();
 
+// Middleware
 app.use(express.json());
 
-// MongoDB connection
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch((err) => console.log(err));
-
-// Home route
-app.get("/", (req, res) => {
-    res.send("Server running");
+.then(() => {
+    console.log("MongoDB Connected");
+})
+.catch((err) => {
+    console.log("MongoDB Error:", err);
 });
 
-// Signup route
+// Home Route
+app.get("/", (req, res) => {
+    res.send("Server running successfully");
+});
+
+// Signup Route
 app.post("/signup", async (req, res) => {
+
     try {
+
         const { name, email, password, role } = req.body;
 
         const existingUser = await User.findOne({ email });
@@ -46,14 +53,18 @@ app.post("/signup", async (req, res) => {
         });
 
     } catch (error) {
+
         res.status(500).json({
             error: error.message
         });
+
     }
+
 });
 
-// Login route
+// Login Route
 app.post("/login", async (req, res) => {
+
     try {
 
         const { email, password } = req.body;
@@ -84,8 +95,12 @@ app.post("/login", async (req, res) => {
         });
 
     }
+
 });
+
+// Create Project
 app.post("/projects", async (req, res) => {
+
     try {
 
         const project = await Project.create({
@@ -106,8 +121,12 @@ app.post("/projects", async (req, res) => {
         });
 
     }
+
 });
+
+// Create Task
 app.post("/tasks", async (req, res) => {
+
     try {
 
         const task = await Task.create({
@@ -129,8 +148,10 @@ app.post("/tasks", async (req, res) => {
         });
 
     }
+
 });
 
+// Server Start
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
